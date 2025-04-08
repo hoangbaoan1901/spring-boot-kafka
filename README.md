@@ -105,11 +105,11 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 ```
-### Results
-
+### Result
+![](src/main/resources/images/kafka_3_replicas.png)
 
 ## 3. Using HA proxy server so for distribution to Kafka servers
-Here, we could add HA proxy server as a leader
+Kafka cluster doesn't follows the master-slave architecture. There won't be case where the master gone out of service and then the whole cluster becomes inaaccessible. Here, to attach Kafka cluster to a HA proxy server so that it could be the master.
 ```yml
   haproxy:
     image: haproxy:latest
@@ -148,5 +148,4 @@ listen kafka
     server kafka4 kafka4:19095 check
 ```
 ### Result
-![](src/main/resources/images/kafka_3_replicas.png)
 ![](src/main/resources/images/kafka_3_results.png)
