@@ -108,7 +108,7 @@ services:
 ### Result
 ![](src/main/resources/images/kafka_3_replicas.png)
 
-## 3. Using HA proxy server so for distribution to Kafka servers
+### Using HA proxy server so for distribution to Kafka servers
 Kafka cluster doesn't follows the master-slave architecture. There won't be case where the master gone out of service and then the whole cluster becomes inaaccessible. Here, to attach Kafka cluster to a HA proxy server so that it could be the master.
 ```yml
   haproxy:
@@ -149,3 +149,23 @@ listen kafka
 ```
 ### Result
 ![](src/main/resources/images/kafka_3_results.png)
+
+## 3. Use Kafka's replicate factor
+This way, if one Kafka server dies, other could still serve even if the "leader" dies. 
+```yml
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka1
+    depends_on:
+      - zookeeper
+    ports:
+      - "19092:19092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+```
